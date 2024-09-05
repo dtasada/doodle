@@ -1,0 +1,3 @@
+mut bar = foo * 10 + (45 / 10 - -5);
+let foo: [][]number = 10;
+bar = "hello world!";

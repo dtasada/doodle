@@ -40,6 +40,7 @@ func (p *parser) currentToken() lexer.Token {
 }
 
 func (p *parser) advance() lexer.Token {
+	// Returns current token and then advances
 	tk := p.currentToken()
 	p.pos++
 	return tk

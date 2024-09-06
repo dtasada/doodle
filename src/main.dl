@@ -1,3 +1,19 @@
-mut bar = foo * 10 + (45 / 10 - -5);
-let foo: [][]number = 10;
-bar = "hello world!";
+// Declaration
+struct Rect {
+	width: number;
+	height: number;
+
+	// fn awe(): string {
+	// 	asd();
+	// }
+}
+
+// Struct instance
+mut r1: int = Rect ;
+// let r1 = Rect {
+// 	width: 10.2,
+// 	height: 45.2 + 10,
+// };
+
+asd();
+let numbers: []number = []number{};

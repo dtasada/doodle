@@ -52,6 +52,7 @@ const (
 
 	// Reserved keywords
 	IMPORT
+	PUB
 	STRUCT
 	ENUM
 	INTERFACE
@@ -67,6 +68,7 @@ const (
 
 var reserved_keywords = map[string]TokenKind{
 	"import":    IMPORT,
+	"pub":       PUB,
 	"struct":    STRUCT,
 	"enum":      ENUM,
 	"interface": INTERFACE,
@@ -86,7 +88,7 @@ type Token struct {
 }
 
 func (token *Token) Debug() {
-	if token.Kind.isOneOf(IDENTIFIER, NUMBER, STRING) {
+	if token.Kind.IsOneOf(IDENTIFIER, NUMBER, STRING) {
 		fmt.Printf("%s (%s)\n", token.Kind.ToString(), token.Value)
 	} else {
 		fmt.Printf("%s ()\n", token.Kind.ToString())
@@ -99,7 +101,7 @@ func NewToken(kind TokenKind, value string) Token {
 	}
 }
 
-func (kind TokenKind) isOneOf(expectedTokens ...TokenKind) bool {
+func (kind TokenKind) IsOneOf(expectedTokens ...TokenKind) bool {
 	for _, expectedToken := range expectedTokens {
 		if expectedToken == kind {
 			return true
@@ -121,7 +123,7 @@ func (kind TokenKind) ToString() string {
 		return "identifier"
 
 	case OPEN_BRACKET:
-		return "open_braacket"
+		return "open_bracket"
 	case CLOSE_BRACKET:
 		return "close_bracket"
 	case OPEN_BRACE:
@@ -192,6 +194,8 @@ func (kind TokenKind) ToString() string {
 	// Reserved keywords
 	case LET:
 		return "let"
+	case PUB:
+		return "pub"
 	case STRUCT:
 		return "struct"
 	case IMPORT:

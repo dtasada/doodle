@@ -39,7 +39,7 @@ func parseSymbolType(p *parser) ast.Type {
 func parseArrayType(p *parser) ast.Type {
 	p.advance()
 	p.expect(lexer.CLOSE_BRACKET)
-	underlyingType := parseType(p, defaultBp)
+	underlyingType := parseType(p, BP_DEFAULT)
 	return ast.ArrayType{
 		Underlying: underlyingType,
 	}

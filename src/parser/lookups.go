@@ -9,17 +9,17 @@ type bindingPower int
 
 const (
 	// Do not change order of iota
-	defaultBp bindingPower = iota
-	comma
-	assignment
-	logical
-	relational
-	additive
-	multiplicative
-	unary
-	cal
-	member
-	primary
+	BP_DEFAULT bindingPower = iota
+	BP_COMMA
+	BP_ASSIGNMENT
+	BP_LOGICAL
+	BP_RELATIONAL
+	BP_ADDITIVE
+	BP_MULTIPLICATIVE
+	BP_UNARY
+	BP_CALL
+	BP_MEMBER
+	BP_PRIMARY
 )
 
 type (
@@ -45,36 +45,35 @@ func nud(kind lexer.TokenKind, nudFunc nudHandler) {
 }
 
 func statement(kind lexer.TokenKind, statementFunc statementHandler) {
-	bpLookup[kind] = defaultBp
+	bpLookup[kind] = BP_DEFAULT
 	statementLookup[kind] = statementFunc
 }
 
 func createTokenLookups() {
-	led(lexer.ASSIGNMENT, assignment, parseAssignmentExpression)
-	led(lexer.PLUS_EQUALS, assignment, parseAssignmentExpression)
-	led(lexer.MINUS_EQUALS, assignment, parseAssignmentExpression)
+	led(lexer.ASSIGNMENT, BP_ASSIGNMENT, parseAssignmentExpression)
+	led(lexer.PLUS_EQUALS, BP_ASSIGNMENT, parseAssignmentExpression)
+	led(lexer.MINUS_EQUALS, BP_ASSIGNMENT, parseAssignmentExpression)
 	// add *=, /= and %=
 
 	// Logical
-	led(lexer.AND, logical, parseBinaryExpression)
-	led(lexer.OR, logical, parseBinaryExpression)
-	led(lexer.ELLIPSIS, logical, parseBinaryExpression)
+	led(lexer.AND, BP_LOGICAL, parseBinaryExpression)
+	led(lexer.OR, BP_LOGICAL, parseBinaryExpression)
+	led(lexer.ELLIPSIS, BP_LOGICAL, parseBinaryExpression)
 
 	// Relational
-	led(lexer.LESS, relational, parseBinaryExpression)
-	led(lexer.LESS_EQUALS, relational, parseBinaryExpression)
-	led(lexer.GREATER, relational, parseBinaryExpression)
-	led(lexer.GREATER_EQUALS, relational, parseBinaryExpression)
-	led(lexer.EQUALS, relational, parseBinaryExpression)
-	led(lexer.NOT_EQUALS, relational, parseBinaryExpression)
+	led(lexer.LESS, BP_RELATIONAL, parseBinaryExpression)
+	led(lexer.LESS_EQUALS, BP_RELATIONAL, parseBinaryExpression)
+	led(lexer.GREATER, BP_RELATIONAL, parseBinaryExpression)
+	led(lexer.GREATER_EQUALS, BP_RELATIONAL, parseBinaryExpression)
+	led(lexer.EQUALS, BP_RELATIONAL, parseBinaryExpression)
+	led(lexer.NOT_EQUALS, BP_RELATIONAL, parseBinaryExpression)
 
 	// Additive & Multiplicative
-	led(lexer.PLUS, additive, parseBinaryExpression)
-	led(lexer.DASH, additive, parseBinaryExpression)
-
-	led(lexer.ASTERISK, multiplicative, parseBinaryExpression)
-	led(lexer.SLASH, multiplicative, parseBinaryExpression)
-	led(lexer.PERCENT, multiplicative, parseBinaryExpression)
+	led(lexer.PLUS, BP_ADDITIVE, parseBinaryExpression)
+	led(lexer.DASH, BP_ADDITIVE, parseBinaryExpression)
+	led(lexer.ASTERISK, BP_MULTIPLICATIVE, parseBinaryExpression)
+	led(lexer.SLASH, BP_MULTIPLICATIVE, parseBinaryExpression)
+	led(lexer.PERCENT, BP_MULTIPLICATIVE, parseBinaryExpression)
 
 	// Literals & Symbols
 	nud(lexer.NUMBER, parsePrimaryExpression)
@@ -82,8 +81,20 @@ func createTokenLookups() {
 	nud(lexer.IDENTIFIER, parsePrimaryExpression)
 	nud(lexer.OPEN_PAREN, parseGroupingExpression)
 	nud(lexer.DASH, parsePrefixExpression)
+	nud(lexer.OPEN_BRACKET, parseArrayInstExpression)
+
+	// Member/computed/call
+	led(lexer.DOT, BP_MEMBER, parseMemberExpression)
+	led(lexer.OPEN_BRACKET, BP_MEMBER, parseMemberExpression)
+	led(lexer.OPEN_PAREN, BP_CALL, parseCallExpression)
+
+	// Instantiation
+	led(lexer.OPEN_BRACE, BP_CALL, parseStructInstExpression)
 
 	// Statements
 	statement(lexer.LET, parseVarDeclStatement)
 	statement(lexer.MUT, parseVarDeclStatement)
+	statement(lexer.STRUCT, parseStructDeclStatement)
+	statement(lexer.OPEN_BRACE, parseBlockStatement)
+
 }

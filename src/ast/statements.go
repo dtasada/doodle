@@ -4,19 +4,35 @@ type BlockStatement struct {
 	Body []Statement
 }
 
-func (n BlockStatement) statement() {}
-
 type ExpressionStatement struct {
 	Expression Expression
 }
 
-func (n ExpressionStatement) statement() {}
-
 type VarDeclStatement struct {
-	VariableIdentifier string
-	IsMutable          bool
-	AssignedValue      Expression
-	ExplicitType       Type
+	Identifier    string
+	IsMutable     bool
+	AssignedValue Expression
+	ExplicitType  Type
 }
 
-func (n VarDeclStatement) statement() {}
+type StructDeclStatement struct {
+	Identifier string
+	Properties map[string]StructProperty
+	Methods    map[string]FuncType
+}
+
+type StructProperty struct {
+	IsPublic      bool
+	InnerVariable VarType
+}
+
+type FuncStatement struct {
+	IsPublic   bool
+	Identifier string
+	Type       FuncType
+}
+
+func (n BlockStatement) statement()      {}
+func (n ExpressionStatement) statement() {}
+func (n VarDeclStatement) statement()    {}
+func (n StructDeclStatement) statement() {}
